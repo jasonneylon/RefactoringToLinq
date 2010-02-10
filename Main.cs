@@ -5,13 +5,27 @@ using System.Linq;
 
 namespace RefactoringToLinq
 {
-    public class Whiskey
+
+	public class Whiskey
     {
         public string Name { get; set; }
         public int Age { get; set; }
         public decimal Price { get; set; }
         public string Country { get; set; }
     }
+
+	
+    public class Owner
+    {
+        public Owner(string name, params Whiskey[] whiskies)
+        {
+            Name = name;
+            Whiskies = whiskies;
+        }
+        public string Name {get;set; }
+        public IEnumerable<Whiskey> Whiskies { get; set; }
+    }
+
 
     class Program
     {
@@ -38,6 +52,8 @@ namespace RefactoringToLinq
             new Owner("Pernod", redbreast, greenspot)
         };
 
+		
+		
         static void LoopHappyVersion()
         {
 
@@ -225,18 +241,4 @@ namespace RefactoringToLinq
             LinqVersion();
         }
     }
-
-
-
-        public class Owner
-        {
-            public Owner(string name, params Whiskey[] whiskies)
-            {
-                Name = name;
-                Whiskies = whiskies;
-            }
-            public string Name {get;set; }
-            public IEnumerable<Whiskey> Whiskies { get; set; }
-        }
-
 }
