@@ -13,7 +13,7 @@ What advantages does a functional approach bring?
 
 The bad stuff - 
 - debugging
-- possible performance issues if you never resolve to list. 
+- possible performance issues if you never resolve to list. -> Lazy evaluation problems
 
 In a team environment to realise these advantages your fellow developers must become familar with these functional approaches too. This should get easier over time as functional constructs are now built into most languages. Additionally tools such as Resharper now support automatic refactoring to Linq expressions.
 
