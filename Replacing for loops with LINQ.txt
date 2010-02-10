@@ -8,7 +8,7 @@ Linq operations names are based on SQL names - rather than traditional functiona
 
 What advantages does a functional approach bring? 
 * shorter more concise code
-* less (error prone) temporary variables and less code means less errors generally
+* less (error prone) temporary variables and less code means less errors generally - no/less state
 * easier to understand, more declarive code - code which states what you want rather than details of how to achieve it
 
 The bad stuff - 
@@ -32,8 +32,9 @@ Goodbye For Loop
 * Testing if something is true for any element of a list
 * Testing if something is true for all elements of a list
 * [TODO] Summing?
-* Finding the 'best' element in a list
+* Finding the 'best' element in a list - TODO talk about accumaltor here
 * For list of lists flattening them down to a single list
+
 
 
 
