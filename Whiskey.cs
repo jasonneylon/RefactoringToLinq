@@ -6,11 +6,28 @@ using System.Linq;
 namespace RefactoringToLinq
 {
 	
+	public class FunctionalComparer<T> : IComparer<T> 
+	{
+		Func<T, T, int> compareFunction;
+		
+		public FunctionalComparer(Func<T, T, int> compareFunction)
+		{
+			this.compareFunction = compareFunction;
+		}
+		
+		public int Compare (T x, T y)
+		{
+			return compareFunction(x, y);
+		}
+
+	}
+	
 public class Whiskey
     {
+		// its Func<T, TResult>  - last param is return value!!
 		public static IComparer<Whiskey> PriceComparer{
 			get{
-				return new WhiskeyPriceComparer();
+				return new FunctionalComparer<Whiskey>((left, right) => left.Price.CompareTo(right.Price));
 			}
 		}
 		
