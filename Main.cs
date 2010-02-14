@@ -5,13 +5,10 @@ using System.Linq;
 
 namespace RefactoringToLinq
 {
-	
     class Program
     {
-        		
         static void LoopHappyVersion(IEnumerable<Whiskey> whiskies, IEnumerable<Owner> owners)
         {
-
             // project to a different type
             var whiskeyNames = new List<string>();
             foreach (var whiskey in whiskies)
