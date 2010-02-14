@@ -5,28 +5,7 @@ using System.Linq;
 
 namespace RefactoringToLinq
 {
-
-	public class Whiskey
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-        public decimal Price { get; set; }
-        public string Country { get; set; }
-    }
-
 	
-    public class Owner
-    {
-        public Owner(string name, params Whiskey[] whiskies)
-        {
-            Name = name;
-            Whiskies = whiskies;
-        }
-        public string Name {get;set; }
-        public IEnumerable<Whiskey> Whiskies { get; set; }
-    }
-
-
     class Program
     {
         static Whiskey ardbeg = new Whiskey { Name = "Ardbeg 1998", Age = 12, Price = 49.95m, Country = "Scotland" };
@@ -211,7 +190,8 @@ namespace RefactoringToLinq
             Whiskey mostExpensiveWhiskey2 = whiskies.Aggregate(
                 (champion, challenger) => challenger.Price > champion.Price ? challenger : champion
                 );
-            Console.WriteLine("mostExpensive using aggregate :");
+   
+			Console.WriteLine("mostExpensive using aggregate :");
             ObjectDumper.Write(mostExpensiveWhiskey2);
 
             var scottishWhiskiesCount = 0;

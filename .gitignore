@@ -1,0 +1,7 @@
+# Compiled source
+bin
+
+# tool files
+
+*.user*
+*.pidb
