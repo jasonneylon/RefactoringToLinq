@@ -37,6 +37,8 @@
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ObjectDumper.cs" />
+    <Compile Include="Whiskey.cs" />
+    <Compile Include="Owner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

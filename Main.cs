@@ -8,32 +8,8 @@ namespace RefactoringToLinq
 	
     class Program
     {
-        static Whiskey ardbeg = new Whiskey { Name = "Ardbeg 1998", Age = 12, Price = 49.95m, Country = "Scotland" };
-        static Whiskey glenmorangie = new Whiskey { Name = "Glenmorangie", Age = 10, Price = 28.95m, Country = "Scotland" };
-        static Whiskey talisker = new Whiskey { Name = "Talisker", Age = 18, Price = 57.95m, Country = "Scotland" };
-        static Whiskey cragganmore = new Whiskey { Name = "Cragganmore", Age = 12, Price = 30.95m, Country = "Scotland" };
-        static Whiskey redbreast = new Whiskey { Name = "Redbreast", Age = 12, Price = 27.95m, Country = "Ireland" };
-        static Whiskey greenspot = new Whiskey { Name = "Green spot", Age = 8, Price = 44.48m, Country = "Ireland" };
-
-        static List<Whiskey>  whiskies = new List<Whiskey>() {
-                ardbeg,
-                glenmorangie,
-                talisker,
-                cragganmore,
-                redbreast,
-                greenspot
-            };
-
-        static List<Owner> owners = new List<Owner>()
-        {
-            new Owner("Glenmorangie", ardbeg, glenmorangie),
-            new Owner("Diageo", talisker, cragganmore),
-            new Owner("Pernod", redbreast, greenspot)
-        };
-
-		
-		
-        static void LoopHappyVersion()
+        		
+        static void LoopHappyVersion(IEnumerable<Whiskey> whiskies, IEnumerable<Owner> owners)
         {
 
             // project to a different type
@@ -110,6 +86,11 @@ namespace RefactoringToLinq
             Console.WriteLine("mostExpensive is");
             ObjectDumper.Write(mostExpensiveWhiskey);
 
+			
+			
+			
+			
+			
             // doing too much
             var scottishWhiskiesCount = 0;
             var scottishWhiskeyTotal = 0m;
@@ -157,10 +138,18 @@ namespace RefactoringToLinq
             }
 
             ObjectDumper.Write(whiskeyNamesFromOwners);
+			
+			
+            Console.WriteLine("Strategy pattern");
+			mostExpensiveWhiskey = whiskies.OrderByDescending(x => x, Whiskey.PriceComparer).First();
+            Console.WriteLine("mostExpensive is");
+            ObjectDumper.Write(mostExpensiveWhiskey);
+
         }
 
-        static void LinqVersion()
+        static void LinqVersion(IEnumerable<Whiskey> whiskies, IEnumerable<Owner> owners)
         {
+			
             // project to a different type
             var whiskeyNames = whiskies.Select(x => x.Name).ToList();
 
@@ -192,7 +181,8 @@ namespace RefactoringToLinq
                 );
    
 			Console.WriteLine("mostExpensive using aggregate :");
-            ObjectDumper.Write(mostExpensiveWhiskey2);
+			ObjectDumper.Write(mostExpensiveWhiskey2);
+
 
             var scottishWhiskiesCount = 0;
             var scottishWhiskeyTotal = 0m;
@@ -202,6 +192,8 @@ namespace RefactoringToLinq
 
             Console.WriteLine("{0} scottish whiskies costing {1}", scottishWhiskiesCount, scottishWhiskeyTotal);
 
+			Console.WriteLine("non {0} scottish whiskies costing {1}", scottishWhiskiesCount, scottishWhiskeyTotal);
+			
             var whiskeyNamesFromOwners = owners.SelectMany(x => x.Whiskies).Select(x=> x.Name).ToList();
 
             whiskeyNamesFromOwners = (from owner in owners
@@ -215,10 +207,34 @@ namespace RefactoringToLinq
         }
         static void Main(string[] args)
         {
-            LoopHappyVersion();
+					Whiskey ardbeg = new Whiskey { Name = "Ardbeg 1998", Age = 12, Price = 49.95m, Country = "Scotland" };
+        Whiskey glenmorangie = new Whiskey { Name = "Glenmorangie", Age = 10, Price = 28.95m, Country = "Scotland" };
+        Whiskey talisker = new Whiskey { Name = "Talisker", Age = 18, Price = 57.95m, Country = "Scotland" };
+        Whiskey cragganmore = new Whiskey { Name = "Cragganmore", Age = 12, Price = 30.95m, Country = "Scotland" };
+        Whiskey redbreast = new Whiskey { Name = "Redbreast", Age = 12, Price = 27.95m, Country = "Ireland" };
+        Whiskey greenspot = new Whiskey { Name = "Green spot", Age = 8, Price = 44.48m, Country = "Ireland" };
+
+        List<Whiskey>  whiskies = new List<Whiskey>() {
+                ardbeg,
+                glenmorangie,
+                talisker,
+                cragganmore,
+                redbreast,
+                greenspot
+            };
+
+        List<Owner> owners = new List<Owner>()
+        {
+            new Owner("Glenmorangie", ardbeg, glenmorangie),
+            new Owner("Diageo", talisker, cragganmore),
+            new Owner("Pernod", redbreast, greenspot)
+        };
+
+	
+            LoopHappyVersion(whiskies, owners);
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Out.WriteLine("Linq version");
-            LinqVersion();
+//            LinqVersion();
         }
     }
 }
