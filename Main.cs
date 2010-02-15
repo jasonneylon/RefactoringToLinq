@@ -180,6 +180,18 @@ namespace RefactoringToLinq
 			
 			ObjectDumper.Write (whiskeyNamesFromOwners);
 			
+			var blendedWhisky = whiskies.Aggregate(new Whiskey() { Country="Scotland" }, (sum, next) => 
+			                                       {
+				if (sum.Country == next.Country)
+				{
+					return new Whiskey() {Country = sum.Country, Name = sum.Name + " " + next.Name, Price = sum.Price + (next.Price / 10)};
+				}
+				return sum;
+			});
+			
+			ObjectDumper.Write (blendedWhisky);
+			
+			
 			
 			// http://code.google.com/p/morelinq/ - has this
 		}
