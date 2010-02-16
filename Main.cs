@@ -73,10 +73,7 @@ namespace RefactoringToLinq
 			}
 			Console.WriteLine ("mostExpensive is");
 			ObjectDumper.Write (mostExpensiveWhiskey);
-			
-			
-			
-			
+					
 			
 			
 			// doing too much
@@ -194,7 +191,9 @@ namespace RefactoringToLinq
 				return list;
 			}));
 			
+			var names = blendedWhisky.Ingredients.Select(x=> x.Name).ToArray();
 			
+			Console.WriteLine(String.Join(",", names));
 			
 			// http://code.google.com/p/morelinq/ - has this
 		}
