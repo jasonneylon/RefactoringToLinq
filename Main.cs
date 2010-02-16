@@ -180,12 +180,19 @@ namespace RefactoringToLinq
 			
 			ObjectDumper.Write (whiskeyNamesFromOwners);
 			
-			var blendedWhisky = whiskies.Where(x=> x.Country == "Scotland").Aggregate(new Whiskey() { Country="Scotland" }, (sum, next) => 
+			var blendedWhisky = whiskies.Where(x=> x.Country == "Scotland").Aggregate(new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" }, (sum, next) => 
 			                                       {
-					return new Whiskey() {Country = sum.Country, Name = sum.Name + " " + next.Name, Price = sum.Price + (next.Price / 10)};
+					var blendedWhiskies = new List<Whiskey>(sum.Ingredients.Concat(new [] {next}));
+					return new Whiskey() {Country = sum.Country, Age=sum.Age, Name = sum.Name, Price = sum.Price + (next.Price / 10),  Ingredients = blendedWhiskies };
 			});
 			
 			ObjectDumper.Write (blendedWhisky);
+			Console.WriteLine(blendedWhisky.Ingredients.Aggregate("", (list, next) => 
+			{
+				if (list.Length > 0)  list += ", ";
+				list += next.Name; 
+				return list;
+			}));
 			
 			
 			
