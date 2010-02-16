@@ -31,24 +31,12 @@ namespace RefactoringToLinq
 
 		class WhiskeyPriceComparer : IComparer<Whiskey>
 		{
+			// if left is greater return -1, if right is greater return 1
 			public int Compare (Whiskey left, Whiskey right)
 			{
 				var comparer = Comparer<decimal>.Default;
 				return comparer.Compare (left.Price, right.Price);
-				//return left.Price.CompareTo(right.Price);
 			}
-				/*
-				if (left.Price > right.Price)
-				{
-					return 1;
-				}
-				// if the first object is less than the second
-				if (left.Price < right.Price)
-				{
-					return -1;
-				}
-				return 0;
-				*/				
 		}
 
 
