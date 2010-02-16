@@ -61,20 +61,6 @@ namespace RefactoringToLinq
 			
 			Console.Out.WriteLine ("Is there Irish whiskey? {0}", isThereIrishWhiskey);
 			
-			// max - aggregation examples
-			Whiskey mostExpensiveWhiskey = null;
-			foreach (var challenger in whiskies) {
-				if (mostExpensiveWhiskey == null) {
-					mostExpensiveWhiskey = challenger;
-				}
-				if (challenger.Price > mostExpensiveWhiskey.Price) {
-					mostExpensiveWhiskey = challenger;
-				}
-			}
-			Console.WriteLine ("mostExpensive is");
-			ObjectDumper.Write (mostExpensiveWhiskey);
-					
-			
 			
 			// doing too much
 			var scottishWhiskiesCount = 0;
@@ -116,11 +102,21 @@ namespace RefactoringToLinq
 			
 			ObjectDumper.Write (whiskeyNamesFromOwners);
 			
+	
 			
-			Console.WriteLine ("Strategy pattern");
-			mostExpensiveWhiskey = whiskies.OrderByDescending (x => x, Whiskey.PriceComparer).First ();
-			Console.WriteLine ("mostExpensive is");
-			ObjectDumper.Write (mostExpensiveWhiskey);
+			var blendedWhiskey = new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" };
+			foreach (var whiskey in whiskies)
+			{
+				if (whiskey.Country != "Scotland")
+				{
+					continue;
+				}
+				
+				var blendedWhiskies = new List<Whiskey>(blendedWhiskey.Ingredients.Concat(new [] {whiskey}));
+				blendedWhiskey = new Whiskey() {Country = blendedWhiskey.Country, Age=blendedWhiskey.Age, Name = blendedWhiskey.Name, Price = blendedWhiskey.Price + (whiskey.Price / 10),  Ingredients = blendedWhiskies };
+			};
+
+			ObjectDumper.Write (blendedWhiskey);
 			
 		}
 
@@ -193,8 +189,24 @@ namespace RefactoringToLinq
 			
 			var names = blendedWhisky.Ingredients.Select(x=> x.Name).ToArray();
 			
-			Console.WriteLine(String.Join(",", names));
+			Console.WriteLine(String.Join(", ", names));
 			
+			// max - aggregation examples
+			mostExpensiveWhiskey = null;
+			foreach (var challenger in whiskies) {
+				if (mostExpensiveWhiskey == null) {
+					mostExpensiveWhiskey = challenger;
+				}
+				if (challenger.Price > mostExpensiveWhiskey.Price) {
+					mostExpensiveWhiskey = challenger;
+				}
+			}
+			Console.WriteLine ("mostExpensive is");
+			ObjectDumper.Write (mostExpensiveWhiskey);
+			
+			Console.WriteLine ("Strategy pattern");
+			mostExpensiveWhiskey = whiskies.OrderByDescending (x => x, Whiskey.PriceComparer).First ();
+		
 			// http://code.google.com/p/morelinq/ - has this
 		}
 		static void Main (string[] args)
