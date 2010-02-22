@@ -67,10 +67,32 @@ Console.WriteLine("Whiskey names: {0}", String.Join(", ", whiskeyNames.ToArray()
 This outputs:
 Whiskey names: Ardbeg 1998, Glenmorangie, Talisker, Cragganmore, Redbreast, Green spot
 
-Converting a list of objects to another list of objects is called mapping or projection in functional programming. The LINQ operation to do this is called Select.
+Converting a list of objects to another list of objects is called mapping or projection in functional programming. The LINQ method to do this is called Select.
 
 [sourcecode language="csharp"]
 	var whiskeyNames = whiskies.Select(x=> x.Name).ToList();
+[/sourcecode]
+
+
+Filtering a list
+
+In our second example we want to get a list of "good value" whiskies that cost 30 pounds or less. To do this a new list is created, the list of whiskies is iterated over and any whiskey under 30 pounds is added to the new list:
+[sourcecode language="csharp"]
+	var goodValueWhiskies = new List<Whiskey> ();
+	foreach (var whiskey in whiskies) {
+	if (whiskey.Price < 30m) {
+		goodValueWhiskies.Add (whiskey);
+	}
+}
+Console.WriteLine("Found {0} good value whiskeys", goodValueWhiskeies.Count);
+[/sourcecode]
+
+This outputs:
+Found 2 good value whiskeys
+
+This operation is called filtering in functional programming. In LINQ we use the Where method to filter a list. A predicate is passed to Where to determine which items to keep:
+[sourcecode language="csharp"]
+	var goodValueWhiskies = whiskies.Where(x=> x.Price <= 30m).ToList();
 [/sourcecode]
 
 

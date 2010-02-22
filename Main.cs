@@ -33,12 +33,7 @@ namespace RefactoringToLinq
 			
 		    // filter down to good value whiskey
 			
-		    var goodValueWhiskeies = new List<Whiskey> ();
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Price < 30m) {
-		            goodValueWhiskeies.Add (whiskey);
-		        }
-		    }
+		    var goodValueWhiskies = whiskies.Where(x=> x.Price <= 30m).ToList();
 		    Console.WriteLine("Found {0} good value whiskeys", goodValueWhiskeies.Count);
 			
 		    var howMany12YearOldWhiskies = 0;
