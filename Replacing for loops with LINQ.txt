@@ -1,32 +1,32 @@
 Refactoring for loops to LINQ
 
-Language integrated query (LINQ) was first introduced into the .NET framework 3 years ago in 2007. It taken time for developers to fully grasp its power. On release it was promoted as a way to integrate database and XML querying into the language. However, for me its been an introduction into a more functional approach to programming. Recently, I have become more of a polygot programmer - exploring and using langauges such as Javascript, Ruby and F#. These languages are more upfront about their funcional influences I and now find myself writing C# in a much more functional style.
+Language integrated query (LINQ) was first introduced 3 years ago in 2007. It has taken time for developers to fully grasp its usefulness. On release it was promoted as a way to integrate database and XML querying into .NET languages. Although LINQ made heavy use of terminogoly from SQL (SELECT/WHERE/AGGREGATE) but in fact LINQ was based on functional programming concepts.  Recently, I have become more of a polygot programmer - exploring and using langauges such as Javascript, Ruby and F#. These languages are more upfront about their funcional influences I and now find myself using LINQ to write C# in a more functional style.
 
-LINQ introduced a more High level operations on collection - you don't care about how it works. More decl
-Linq operations names are based on SQL names - rather than traditional functional programming names
-
-
-What advantages does a functional approach bring? 
+What advantages does a functional style bring? 
 * shorter more concise code
-* less (error prone) temporary variables and less code means less errors generally - no/less state
-* easier to understand, more declarive code - code which states what you want rather than details of how to achieve it
+* less temporary variables
+* less errors 
+* easier to understand, more declarive code
 
-The bad stuff - 
-- debugging
-- possible performance issues if you never resolve to list. -> Lazy evaluation problems
+There are some disadvantages however: 
+* debugging is harder
+* performance gotchas due to deferred execution (or lazy evaluation as it is referred to functional programming) 
 
-In a team environment to realise these advantages your fellow developers must become familar with these functional approaches too. This should get easier over time as functional constructs are now built into most languages. Additionally tools such as Resharper now support automatic refactoring to Linq expressions.
+In a team environment to realise these advantages your fellow developers must become familar with these functional approaches too. This should get easier over time as functional constructs are now built into most languages. Additionally tools such as Resharper now support automatic refactoring to LINQ expressions.
 
+Thinking functional
 
-Refer to transfromational mindset
+LINQ introduced a more high level, declaritive way to work with collections. Instead of manipulating individual items in a collection, operations are performed on the entire collection. These operations can be chained together to produce the same results that would traditional be achieved by a for loop. Mark Needham refers to this as the transformational mindset in his talk on Functional c#.
 
-Whenever I see a for or foreach loop in the code I am working I often regard it as a code smell. In many cases it can be refactored into a shorter more meaningful functional version. Often this will reduce the amount of code by 70% to 80%. A key skill to enable you to do this to recognise which type of looping code contruct map to which functional operations.  In this post I will discuss how to this 
+Now I often regard a for or foreach loop in code as a code smell. In many cases it can be refactored into a shorter more meaningful functional version. Often this will reduce the amount of code by 70% to 80%. A key skill to enable you to do this is to recognise which type of looping contruct map to which functional operations.  Below I show several examples of functional refactoring.
 
+The functionals refacotring
 
-
-Goodbye For Loop
+In these examples we use some simple objects based Whiskey objects 
  
-* Creating one list from another
+Creating one list from another
+
+
 * Filtering down data, removing items we dont care about
 * Counting the number of time something occurs in a list (usually with a condition) - TODO note that count (and first) allow you to pass in a predicate
 * Testing if something is true for any element of a list
