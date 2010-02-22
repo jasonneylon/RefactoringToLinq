@@ -24,21 +24,7 @@ namespace RefactoringToLinq
 
 	public class Whiskey
 	{
-		// its Func<T, TResult>  - last param is return value!!
-		public static IComparer<Whiskey> PriceComparer {
-			get { return new FunctionalComparer<Whiskey> ((left, right) => left.Price.CompareTo (right.Price)); }
-		}
-
-		class WhiskeyPriceComparer : IComparer<Whiskey>
-		{
-			// if left is greater return -1, if right is greater return 1
-			public int Compare (Whiskey left, Whiskey right)
-			{
-				var comparer = Comparer<decimal>.Default;
-				return comparer.Compare (left.Price, right.Price);
-			}
-		}
-
+	
 		public Whiskey()
 		{
 			Ingredients = new List<Whiskey>();

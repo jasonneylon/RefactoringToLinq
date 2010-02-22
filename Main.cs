@@ -9,6 +9,11 @@ namespace RefactoringToLinq
 	{
 	    static void Main (string[] args)
 		{
+			LoopHappyVersion();	
+		}
+		
+		static void LoopHappyVersion()
+		{
 			Whiskey ardbeg = new Whiskey { Name = "Ardbeg 1998", Age = 12, Price = 49.95m, Country = "Scotland" };
 			Whiskey glenmorangie = new Whiskey { Name = "Glenmorangie", Age = 10, Price = 28.95m, Country = "Scotland" };
 			Whiskey talisker = new Whiskey { Name = "Talisker", Age = 18, Price = 57.95m, Country = "Scotland" };
@@ -20,11 +25,11 @@ namespace RefactoringToLinq
 
 		    // project to a different type
 		    var whiskeyNames = new List<string> ();
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
+		    foreach (var whiskey in whiskies) {
 		        whiskeyNames.Add (whiskey.Name);
 		    }
-
-	        Console.WriteLine("WhiskeyNames: {0}", String.Join(", ", whiskeyNames.ToArray()));
+			
+	        Console.WriteLine("Whiskey names: {0}", String.Join(", ", whiskeyNames.ToArray()));
 			
 		    // filter down to good value whiskey
 			
@@ -113,6 +118,32 @@ namespace RefactoringToLinq
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Blended Whiskey");
 		    ObjectDumper.Write (blendedWhiskey);
+			
+			
+/*   		 List<string> whiskeyNamesFromOwners = new List<string>();
+            foreach (var owner in owners)
+            {
+                foreach (var whiskey in owner.Whiskies)
+                {
+                    whiskeyNamesFromOwners.Add(whiskey.Name);
+                }
+            }
+			 */
+            // max - aggregation examples
+            Whiskey mostExpensiveWhiskey = null;
+            foreach (var challenger in whiskies)
+            {
+                if (mostExpensiveWhiskey == null)
+                {
+                    mostExpensiveWhiskey = challenger;
+                }
+                if (challenger.Price > mostExpensiveWhiskey.Price)
+                {
+                    mostExpensiveWhiskey = challenger;
+                }
+            }
+            Console.WriteLine("mostExpensive is {0}", mostExpensiveWhiskey.Name);
+            
 		}
 	}
 }
