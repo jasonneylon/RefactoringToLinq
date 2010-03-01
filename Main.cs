@@ -34,72 +34,56 @@ namespace RefactoringToLinq
 		    // filter down to good value whiskey
 			
 		    var goodValueWhiskies = whiskies.Where(x=> x.Price <= 30m).ToList();
-		    Console.WriteLine("Found {0} good value whiskeys", goodValueWhiskeies.Count);
+		    Console.WriteLine("Found {0} good value whiskeys", goodValueWhiskies.Count);
 			
-		    var howMany12YearOldWhiskies = 0;
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Age == 12) {
-		            howMany12YearOldWhiskies++;
-		        }
-		    }
+		    var howMany12YearOldWhiskies = whiskies.Count(x=> x.Age == 12);
 			
 		    Console.WriteLine ("How many 12 year old whiskies do we have {0}", howMany12YearOldWhiskies);
-			
-		    // Quantifier examples - all 
-		    var allAreScottish = true;
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Country != "Scotland") {
-		            allAreScottish = false;
-		            break;
-		        }
-		    }
+					     
+		    var allAreScottish = whiskies.Contains(x=> x.Country == "Scotland");
+		    
 			
 		    Console.Out.WriteLine ("All are scottish? {0}", allAreScottish);
 			
-		    var isThereIrishWhiskey = false;
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Country == "Ireland") {
-		            isThereIrishWhiskey = true;
-		            break;
-		        }
-		    }
+		    var isThereIrishWhiskey = whiskies.Con(x=> x.Country == "Ireland");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Out.WriteLine("Is there Irish whiskey? {0}", isThereIrishWhiskey);
 			
 			
 		    // doing too much example - first split up the for 
-            var scottishWhiskiesCount = 0;
-		    var scottishWhiskeyTotal = 0m;
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Country == "Scotland") {
-		            scottishWhiskiesCount++;
-		            scottishWhiskeyTotal += whiskey.Price;
-		        }
-		    }
-			
-		    scottishWhiskiesCount = 0;
-		    scottishWhiskeyTotal = 0m;
-			
-		    List<Whiskey> scottishWhiskies = new List<Whiskey> ();
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies) {
-		        if (whiskey.Country == "Scotland") {
-		            scottishWhiskies.Add (whiskey);
-		        }
-		    }
-		    foreach (var whiskey in scottishWhiskies) {
-		        scottishWhiskiesCount++;
-		    }
-			
-		    foreach (var whiskey in scottishWhiskies) {
-		        scottishWhiskeyTotal += whiskey.Price;
-		    }
+var scottishWhiskiesCount = 0;
+var scottishWhiskeyTotal = 0m;
+foreach (var whiskey in whiskies) {
+    if (whiskey.Country == "Scotland") {
+        scottishWhiskiesCount++;
+        scottishWhiskeyTotal += whiskey.Price;
+    }
+}
+
+var scottishWhiskies = whiskies.Where(x=> x.Country == "Scotland");
+scottishWhiskiesCount = scottishWhiskies.Count();
+scottishWhiskeyTotal = scottishWhiskies.Sum(x=> x.Price);
+
+List<Whiskey> scottishWhiskies = new List<Whiskey> ();
+foreach (var whiskey in whiskies) {
+    if (whiskey.Country == "Scotland") {
+        scottishWhiskies.Add (whiskey);
+    }
+}
+foreach (var whiskey in scottishWhiskies) {
+    scottishWhiskiesCount++;
+}
+
+foreach (var whiskey in scottishWhiskies) {
+    scottishWhiskeyTotal += whiskey.Price;
+}
             Console.ForegroundColor = ConsoleColor.Blue;
 		    Console.WriteLine ("{0} scottish whiskies costing {1}", scottishWhiskiesCount, scottishWhiskeyTotal);
 			
 			
 		    var blendedWhiskey = new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" };
-		    foreach (var whiskey in (IEnumerable<Whiskey>) whiskies)
+		    foreach (var whiskey in whiskies)
 		    {
 		        if (whiskey.Country != "Scotland")
 		        {

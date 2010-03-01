@@ -1,0 +1,69 @@
+Refactoring to LINQ Part 2: Aggregate is Great
+
+In part one, death to the foreach, I discussed some of the quick and easy refactorings you can use to refactor for loops with LINQ. In this post I will discuss the aggregation extension methods that LINQ provides. These operations are used less frequently but can be just as powerful. Often aggreagte examples revolve around primative types such as int and strings. Below I will some more interesting object based example.
+
+LINQ provides several aggreagtion extension methods: Aggreagate, Average, Count, LongCount, Max, Min and Sum. The aggregation methods all take a list of objects and reduces the list to a single resulting object. Aggreagate is the most flexible of the extension methods and it helps to think of it as a  generic building block upon which the others can be built. In functional programming languages aggreagate is usually referred to as reduce. The SQL like name Aggregate leads developers to write off aggreate as purely for numeric purpose. In fact Aggregate can be used whenever we want to build a single object from a group of objects.
+
+So how does aggreate work? 
+
+Looking at the Aggreage method signature is a pretty scary experience: 
+
+[sourcecode language="csharp"]
+public static TResult Aggregate<TSource, TAccumulate, TResult>(
+    this IEnumerable<TSource> source,
+    TAccumulate seed,
+    Func<TAccumulate, TSource, TAccumulate> func)
+[/sourcecode]
+
+The Aggregate methods takes a list of source objects, a seed 'accumulate' and a function. The function is called for each item in the list. On the first call the seed and the first item in the list are passed to the function. The function must return a result. The result and the second item in the list are then passed to the function. This continues until all items in the list are processed. 
+
+This can taking some getting your head around. Here is an example
+
+[sourcecode language="csharp"]
+// string example
+[/sourcecode]
+
+This outputs:
+
+Explain example
+
+The first paramter the seed is optional. If it is omitted the first two items in the list will be passed to the function. As this example demonstrates:
+
+[sourcecode language="csharp"]
+// string example
+[/sourcecode]
+
+This outputs:
+
+Finding the best item in a list
+
+[sourcecode language="csharp"]
+// best example
+[/sourcecode]
+
+This outputs:
+
+
+Interesting, this could be achieved by using max if our object implemented IComparable, in this case however the determine what is best is subjective so it does not make sense for the class to implement that behaviour. However we can work around this by combining some other LINQ extension methods:
+
+Creating a new 'aggreagated' object
+
+In this example we will create an object from several other objects. This example also uses the whiskey domain. Most whiskey are in fact blends. Blend are made by mixing together several single malt whiskey togehter.
+
+[sourcecode language="csharp"]
+// whiskey example in imperative style
+[/sourcecode]
+
+This outputs:
+
+
+[sourcecode language="csharp"]
+// whiskey example in functional style
+[/sourcecode]
+
+Talk about disadvantages of LINQ here.
+
+
+
+
+
