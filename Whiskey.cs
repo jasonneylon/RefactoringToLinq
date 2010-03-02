@@ -36,5 +36,13 @@ namespace RefactoringToLinq
 		public string Country { get; set; }
 		
 		public List<Whiskey> Ingredients {get; set;}
+		
+		public string IngredientsAsString
+		{
+			get
+			{
+				return String.Join(",", Ingredients.Select(x=> x.Name).ToArray());
+			}
+		}
 	}
 }

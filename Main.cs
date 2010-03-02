@@ -9,7 +9,35 @@ namespace RefactoringToLinq
 	{
 	    static void Main (string[] args)
 		{
-			LoopHappyVersion();	
+			
+var whiskeyNames = new [] {"Ardbeg 1998", "Glenmorangie","Talisker", "Cragganmore"};
+
+var listOfWhiskies = whiskeyNames.Aggregate("Whiskies: ", (accumulated, next) => 
+{
+	Console.Out.WriteLine("(Adding [{0}] to the list [{1}])", next, accumulated);
+	return accumulated + " " + next;
+});
+			
+Console.Out.WriteLine(listOfWhiskies);
+
+			
+listOfWhiskies = whiskeyNames.Aggregate((accumulated, next) => 
+{
+	Console.Out.WriteLine("(Adding [{0}] to the list [{1}])", next, accumulated);
+	return accumulated + " " + next;
+});
+			
+Console.Out.WriteLine(listOfWhiskies);
+
+			listOfWhiskies = new string[] {"Single item"}.Aggregate((accumulated, next) => 
+{
+	Console.Out.WriteLine("(Adding [{0}] to the list [{1}])", next, accumulated);
+	return accumulated + " " + next;
+});
+			
+Console.Out.WriteLine(listOfWhiskies);
+
+					LoopHappyVersion();	
 		}
 		
 		static void LoopHappyVersion()
@@ -40,12 +68,12 @@ namespace RefactoringToLinq
 			
 		    Console.WriteLine ("How many 12 year old whiskies do we have {0}", howMany12YearOldWhiskies);
 					     
-		    var allAreScottish = whiskies.Contains(x=> x.Country == "Scotland");
+		    var allAreScottish = whiskies.All(x=> x.Country == "Scotland");
 		    
 			
 		    Console.Out.WriteLine ("All are scottish? {0}", allAreScottish);
 			
-		    var isThereIrishWhiskey = whiskies.Con(x=> x.Country == "Ireland");
+		    var isThereIrishWhiskey = whiskies.Any(x=> x.Country == "Ireland");
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Out.WriteLine("Is there Irish whiskey? {0}", isThereIrishWhiskey);
@@ -61,18 +89,20 @@ foreach (var whiskey in whiskies) {
     }
 }
 
-var scottishWhiskies = whiskies.Where(x=> x.Country == "Scotland");
+var scottishWhiskies = whiskies.Where(x=> x.Country == "Scotland").ToList();
 scottishWhiskiesCount = scottishWhiskies.Count();
 scottishWhiskeyTotal = scottishWhiskies.Sum(x=> x.Price);
 
-List<Whiskey> scottishWhiskies = new List<Whiskey> ();
+scottishWhiskies = new List<Whiskey> ();
 foreach (var whiskey in whiskies) {
     if (whiskey.Country == "Scotland") {
         scottishWhiskies.Add (whiskey);
     }
 }
+			
 foreach (var whiskey in scottishWhiskies) {
-    scottishWhiskiesCount++;
+    if (whiskey != null)
+	scottishWhiskiesCount++;
 }
 
 foreach (var whiskey in scottishWhiskies) {
@@ -81,19 +111,36 @@ foreach (var whiskey in scottishWhiskies) {
             Console.ForegroundColor = ConsoleColor.Blue;
 		    Console.WriteLine ("{0} scottish whiskies costing {1}", scottishWhiskiesCount, scottishWhiskeyTotal);
 			
+			/*
+var blendedWhiskey = new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" };
+foreach (var whiskey in whiskies)
+{
+    if (whiskey.Country != "Scotland")
+    {
+        continue;
+    }
+	
+    blendedWhiskey.Ingredients.Add(whiskey);
+    blendedWhiskey.Price = blendedWhiskey.Price + (whiskey.Price / 10);
+};
 			
-		    var blendedWhiskey = new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" };
-		    foreach (var whiskey in whiskies)
-		    {
-		        if (whiskey.Country != "Scotland")
-		        {
-		            continue;
-		        }
-				
-		        blendedWhiskey.Ingredients.Add(whiskey);
-                blendedWhiskey.Price = blendedWhiskey.Price + (whiskey.Price / 10);
-		    };
+Console.WriteLine("Blended Whiskey Name: {0}", blendedWhiskey.Name);
+Console.WriteLine("Blended Whiskey Price: {0}", blendedWhiskey.Price);
+Console.WriteLine("Blended Whiskey Ingredients: {0}", blendedWhiskey.IngredientsAsString);
+			*/
+var blendedWhiskey = whiskies.Where(x=> x.Country == "Scotland")
+.Aggregate(new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" },
+	(newWhiskey, nextWhiskey) => 
+	{
+		newWhiskey.Ingredients.Add(nextWhiskey);
+		newWhiskey.Price += (nextWhiskey.Price / 10);
+		return newWhiskey;
+	});
 
+Console.WriteLine("Blended Whiskey Name: {0}", blendedWhiskey.Name);
+Console.WriteLine("Blended Whiskey Price: {0}", blendedWhiskey.Price);
+Console.WriteLine("Blended Whiskey Ingredients: {0}", blendedWhiskey.IngredientsAsString);
+			
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Blended Whiskey");
 		    ObjectDumper.Write (blendedWhiskey);
@@ -109,20 +156,24 @@ foreach (var whiskey in scottishWhiskies) {
             }
 			 */
             // max - aggregation examples
-            Whiskey mostExpensiveWhiskey = null;
-            foreach (var challenger in whiskies)
-            {
-                if (mostExpensiveWhiskey == null)
-                {
-                    mostExpensiveWhiskey = challenger;
-                }
-                if (challenger.Price > mostExpensiveWhiskey.Price)
-                {
-                    mostExpensiveWhiskey = challenger;
-                }
-            }
-            Console.WriteLine("mostExpensive is {0}", mostExpensiveWhiskey.Name);
-            
+Whiskey mostExpensiveWhiskey = null;
+foreach (var challenger in whiskies)
+{
+    if (mostExpensiveWhiskey == null)
+    {
+        mostExpensiveWhiskey = challenger;
+    }
+    if (challenger.Price > mostExpensiveWhiskey.Price)
+    {
+        mostExpensiveWhiskey = challenger;
+    }
+}
+Console.WriteLine("Most expensive is {0}", mostExpensiveWhiskey.Name);
+
+			
+mostExpensiveWhiskey = whiskies.Aggregate((champion, challenger) => challenger.Price > champion.Price ? challenger : champion);
+Console.WriteLine("Most expensive is {0}", mostExpensiveWhiskey.Name);
+
 		}
 	}
 }

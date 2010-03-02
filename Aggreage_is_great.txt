@@ -1,12 +1,12 @@
 Refactoring to LINQ Part 2: Aggregate is Great
 
-In part one, death to the foreach, I discussed some of the quick and easy refactorings you can use to refactor for loops with LINQ. In this post I will discuss the aggregation extension methods that LINQ provides. These operations are used less frequently but can be just as powerful. Often aggreagte examples revolve around primative types such as int and strings. Below I will some more interesting object based example.
+In part one, death to the foreach, I discussed some of the quick and easy refactorings you can use to refactor for loops with LINQ. In this post I will discuss the aggregation extension methods that LINQ provides. These operations are used less frequently but can be just as powerful. Often aggregate examples revolve around primitive types such as int and strings. Below I will some more interesting object based example.
 
-LINQ provides several aggreagtion extension methods: Aggreagate, Average, Count, LongCount, Max, Min and Sum. The aggregation methods all take a list of objects and reduces the list to a single resulting object. Aggreagate is the most flexible of the extension methods and it helps to think of it as a  generic building block upon which the others can be built. In functional programming languages aggreagate is usually referred to as reduce. The SQL like name Aggregate leads developers to write off aggreate as purely for numeric purpose. In fact Aggregate can be used whenever we want to build a single object from a group of objects.
+LINQ provides several aggregation extension methods: Aggregate, Average, Count, LongCount, Max, Min and Sum. The aggregation methods all take a list of objects and reduces the list to a single resulting object. Aggregate is the most flexible of the extension methods and it helps to think of it as a  generic building block upon which the others can be built. In functional programming languages Aggregate is usually referred to as reduce. The SQL like name Aggregate leads developers to write off Aggregate as purely for numeric purpose. In fact Aggregate can be used whenever we want to build a single object from a group of objects.
 
-So how does aggreate work? 
+<h3>So how does Aggregate work?</h3>
 
-Looking at the Aggreage method signature is a pretty scary experience: 
+Looking at the Aggregate method signature is a pretty scary experience: 
 
 [sourcecode language="csharp"]
 public static TResult Aggregate<TSource, TAccumulate, TResult>(
@@ -20,50 +20,129 @@ The Aggregate methods takes a list of source objects, a seed 'accumulate' and a 
 This can taking some getting your head around. Here is an example
 
 [sourcecode language="csharp"]
-// string example
+var whiskeyNames = new [] {"Ardbeg 1998", "Glenmorangie","Talisker", "Cragganmore"};
+
+var listOfWhiskies = whiskeyNames.Aggregate("Whiskies: ", (accumulated, next) => 
+{
+	Console.Out.WriteLine("(Adding [{0}] to the list [{1}])", next, accumulated);
+	return accumulated + " " + next;
+});
+			
+Console.Out.WriteLine(listOfWhiskies);
 [/sourcecode]
 
 This outputs:
+<code>
+(Adding [Ardbeg 1998] to the list [Whiskies: ])
+(Adding [Glenmorangie] to the list [Whiskies:  Ardbeg 1998])
+(Adding [Talisker] to the list [Whiskies:  Ardbeg 1998 Glenmorangie])
+(Adding [Cragganmore] to the list [Whiskies:  Ardbeg 1998 Glenmorangie Talisker])
+Whiskies:  Ardbeg 1998 Glenmorangie Talisker Cragganmore
+</code>
 
-Explain example
+In this example a string listing several whiskies is being built. The seed pasted to the Aggregate method is the string "Whiskey: ". Then a lambda is specified to perform the actual aggregation. This is called for each item in the list of whiskies. On the first execution of the lambda the seed, "Whiskey: ", is passed as the accumulated parameter and the first item in the list "Ardbeg 1998" is passed as the next parameter. On the second execution of the list the return value from the lambada, "Whiskies:  Ardbeg 1998", is then passed as the accumulated parameter and the second item in the list, "Glenmoragnie" is passed as the next parameter.
 
-The first paramter the seed is optional. If it is omitted the first two items in the list will be passed to the function. As this example demonstrates:
+The first parameter the seed is optional. If it is omitted the first two items in the list will be passed to the function. As this example demonstrates:
 
 [sourcecode language="csharp"]
-// string example
+listOfWhiskies = whiskeyNames.Aggregate((accumulated, next) => 
+{
+	Console.Out.WriteLine("(Adding [{0}] to the list [{1}])", next, accumulated);
+	return accumulated + " " + next;
+});
+			
+Console.Out.WriteLine(listOfWhiskies);
 [/sourcecode]
 
 This outputs:
+<code>
+(Adding [Glenmorangie] to the list [Ardbeg 1998])
+(Adding [Talisker] to the list [Ardbeg 1998 Glenmorangie])
+(Adding [Cragganmore] to the list [Ardbeg 1998 Glenmorangie Talisker])
+Ardbeg 1998 Glenmorangie Talisker Cragganmore
+</code>
 
-Finding the best item in a list
+<h3>Finding the best item in a list</h3>
+
+A common coding pattern using foreach is finding the "best" item in a list by some criteria.
+
+In this code snippet we find the most expensive whiskey list. This done by storing the first whiskey in the list in a mostExpensiveWhiskey variable. Then the price of each subsequent whiskey object is compared to the mostExpensiveWhiskey and if its price is higher the 'challenging' variable is stored in the mostExpensiveWhiskey variable.
 
 [sourcecode language="csharp"]
-// best example
+Whiskey mostExpensiveWhiskey = null;
+foreach (var challenger in whiskies)
+{
+    if (mostExpensiveWhiskey == null)
+    {
+        mostExpensiveWhiskey = challenger;
+    }
+    if (challenger.Price > mostExpensiveWhiskey.Price)
+    {
+        mostExpensiveWhiskey = challenger;
+    }
+}
+Console.WriteLine("Most expensive is {0}", mostExpensiveWhiskey.Name);
 [/sourcecode]
 
 This outputs:
+<code>
+Most expensive is Talisker
+</code>
+
+[sourcecode language="csharp"]
+Whiskey mostExpensiveWhiskey = null;
+mostExpensiveWhiskey = whiskies.Aggregate((champion, challenger) => challenger.Price > champion.Price ? challenger : champion);
+Console.WriteLine("Most expensive is {0}", mostExpensiveWhiskey.Name);
+[/sourcecode]
 
 
 Interesting, this could be achieved by using max if our object implemented IComparable, in this case however the determine what is best is subjective so it does not make sense for the class to implement that behaviour. However we can work around this by combining some other LINQ extension methods:
 
-Creating a new 'aggreagated' object
+<h3>Creating a new 'aggregated' object</h3>
 
-In this example we will create an object from several other objects. This example also uses the whiskey domain. Most whiskey are in fact blends. Blend are made by mixing together several single malt whiskey togehter.
+In this example we will create an object from several other objects. This example also uses the whiskey domain. Most whiskey are in fact blends. Blend are made by mixing together several single malt whiskey together.
 
 [sourcecode language="csharp"]
-// whiskey example in imperative style
+var blendedWhiskey = new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" };
+foreach (var whiskey in whiskies)
+{
+    if (whiskey.Country != "Scotland")
+    {
+        continue;
+    }
+	
+    blendedWhiskey.Ingredients.Add(whiskey);
+    blendedWhiskey.Price = blendedWhiskey.Price + (whiskey.Price / 10);
+};
+
+Console.WriteLine("Blended Whiskey Name: {0}", blendedWhiskey.Name);
+Console.WriteLine("Blended Whiskey Price: {0}", blendedWhiskey.Price);
+Console.WriteLine("Blended Whiskey Ingredients: {0}", blendedWhiskey.IngredientsAsString);
 [/sourcecode]
 
 This outputs:
+<code>
+Blended Whiskey Name: Tesco value whiskey
+Blended Whiskey Price: 16.780
+Blended Whiskey Ingredients: Ardbeg 1998,Glenmorangie,Talisker,Cragganmore
+</code>
 
 
 [sourcecode language="csharp"]
-// whiskey example in functional style
+var blendedWhiskey = whiskies.Where(x=> x.Country == "Scotland")
+.Aggregate(new Whiskey() { Name="Tesco value whiskey", Age=3, Country="Scotland" },
+	(newWhiskey, nextWhiskey) => 
+	{
+		newWhiskey.Ingredients.Add(nextWhiskey);
+		newWhiskey.Price += (nextWhiskey.Price / 10);
+		return newWhiskey;
+	});
+
+Console.WriteLine("Blended Whiskey Name: {0}", blendedWhiskey.Name);
+Console.WriteLine("Blended Whiskey Price: {0}", blendedWhiskey.Price);
+Console.WriteLine("Blended Whiskey Ingredients: {0}", blendedWhiskey.IngredientsAsString);
 [/sourcecode]
 
-Talk about disadvantages of LINQ here.
-
-
-
+Talk about disadvantages of LINQ aggregate approach here.
 
 
